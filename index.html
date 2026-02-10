@@ -733,6 +733,36 @@
             background: var(--primary);
             border-radius: 4px;
         }
+        /* Styl dla paska postępu */
+.progress-container {
+    width: 100%;
+    height: 6px;
+    background: #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.progress-bar {
+    height: 100%;
+    background: var(--success);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Styl dla przycisku zmiany kierunku */
+.reverse-btn {
+    background: var(--primary-light);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
     </style>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
@@ -848,6 +878,25 @@
                 <button class="action-btn" onclick="endDriving()">
                     🏁 Zakończ
                 </button>
+                <div id="drivingScreen" class="driving-screen">
+    <div class="progress-container">
+        <div id="progressBar" class="progress-bar"></div>
+    </div>
+
+    <div class="driving-header">
+        <div class="route-info">
+            <div class="route-badge">
+                <span>🚌</span>
+                <span id="routeName">Linia 1</span>
+            </div>
+            <div class="current-time" id="currentTime">12:34</div>
+        </div>
+        <div class="course-info" id="courseDescription">Kurs 1 • 05:35 - 06:10</div>
+        
+        <button class="reverse-btn" onclick="reverseDirection()">
+            🔄 Zmień kierunek
+        </button>
+    </div>
             </div>
         </div>
     </div>
@@ -6805,6 +6854,11 @@
             } else {
                 nextStop.style.display = 'none';
             }
+            // Aktualizacja paska postępu (Punkt 3)
+    const totalStops = appState.currentCourse.stops.length; //
+    const progress = (appState.currentStopIndex / (totalStops - 1)) * 100; //
+    document.getElementById('progressBar').style.width = progress + '%';
+}
 
             // Przyciski nawigacji
             document.getElementById('prevButton').disabled = appState.currentStopIndex === 0;
@@ -6984,6 +7038,25 @@
                 closeModal();
             }
         });
+        function reverseDirection() {
+    const directionSelect = document.getElementById('directionSelect');
+    
+    // Sprawdzamy aktualny index i przełączamy na przeciwny (0 na 1 lub 1 na 0)
+    if (directionSelect.options.length > 1) {
+        directionSelect.selectedIndex = (directionSelect.selectedIndex === 1) ? 2 : 1; 
+        // Uwaga: index 1 to pierwszy kierunek, bo index 0 to "Wybierz kierunek..."
+        
+        // Wywołujemy Twoje istniejące funkcje aktualizujące
+        updateCourses(); 
+        
+        // Automatyczny wybór pierwszego dostępnego kursu w nowym kierunku
+        const courseSelect = document.getElementById('courseSelect');
+        if (courseSelect.options.length > 1) {
+            courseSelect.selectedIndex = 1;
+            startDriving(); // Restartuje ekran z nowymi danymi
+        }
+    }
+}
     </script>
 </body>
 </html>
