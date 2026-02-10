@@ -6982,6 +6982,14 @@
                 closeModal();
             }
         });
-    </script>
+    
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('Service Worker zarejestrowany!'))
+        .catch(err => console.log('Błąd rejestracji SW:', err));
+    });
+  }
+</script>
 </body>
 </html>
