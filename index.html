@@ -6829,35 +6829,41 @@
         }
 
         // Aktualizacja ekranu jazdy
-        function updateDrivingScreen() {
-            const course = appState.currentCourse;
-            const stop = course.stops[appState.currentStopIndex];
-            const totalStops = course.stops.length;
+       function updateDrivingScreen() {
+    const course = appState.currentCourse;
+    const stop = course.stops[appState.currentStopIndex];
+    const totalStops = course.stops.length;
 
-            document.getElementById('routeName').textContent = 
-                appState.scheduleData.lines[appState.currentLine].name;
-            document.getElementById('courseDescription').textContent = 
-                `${course.courseName} • ${course.startTime} - ${course.endTime}`;
-            
-            document.getElementById('stopNumber').textContent = 
-                `${appState.currentStopIndex + 1}/${totalStops}`;
-            document.getElementById('currentStopName').textContent = stop.name;
-            document.getElementById('scheduledTime').textContent = `⏰ Odjazd: ${stop.time}`;
+    document.getElementById('routeName').textContent = 
+        appState.scheduleData.lines[appState.currentLine].name;
+    document.getElementById('courseDescription').textContent = 
+        `${course.courseName} • ${course.startTime} - ${course.endTime}`;
+    
+    document.getElementById('stopNumber').textContent = 
+        `${appState.currentStopIndex + 1}/${totalStops}`;
+    document.getElementById('currentStopName').textContent = stop.name;
+    document.getElementById('scheduledTime').textContent = `⏰ Odjazd: ${stop.time}`;
 
-            // Następny przystanek
-            const nextStop = document.querySelector('.next-stop');
-            if (appState.currentStopIndex < totalStops - 1) {
-                const next = course.stops[appState.currentStopIndex + 1];
-                document.getElementById('nextStopName').textContent = next.name;
-                document.getElementById('nextStopTime').textContent = next.time;
-                nextStop.style.display = 'flex';
-            } else {
-                nextStop.style.display = 'none';
-            }
-            // Aktualizacja paska postępu (Punkt 3)
-    const totalStops = appState.currentCourse.stops.length; //
-    const progress = (appState.currentStopIndex / (totalStops - 1)) * 100; //
+    // Następny przystanek
+    const nextStop = document.querySelector('.next-stop');
+    if (appState.currentStopIndex < totalStops - 1) {
+        const next = course.stops[appState.currentStopIndex + 1];
+        document.getElementById('nextStopName').textContent = next.name;
+        document.getElementById('nextStopTime').textContent = next.time;
+        nextStop.style.display = 'flex';
+    } else {
+        nextStop.style.display = 'none';
+    }
+
+    // AKTUALIZACJA PASKA POSTĘPU
+    const progress = (appState.currentStopIndex / (totalStops - 1)) * 100;
     document.getElementById('progressBar').style.width = progress + '%';
+
+    // Przyciski nawigacji
+    document.getElementById('prevButton').disabled = appState.currentStopIndex === 0;
+    document.getElementById('nextButton').disabled = appState.currentStopIndex >= totalStops - 1;
+
+    updateTimeCounter();
 }
 
             // Przyciski nawigacji
@@ -7040,20 +7046,18 @@
         });
         function reverseDirection() {
     const directionSelect = document.getElementById('directionSelect');
-    
-    // Sprawdzamy aktualny index i przełączamy na przeciwny (0 na 1 lub 1 na 0)
     if (directionSelect.options.length > 1) {
+        // Jeśli jest wybrany kierunek 1, przełącz na 2. Jeśli 2, przełącz na 1.
         directionSelect.selectedIndex = (directionSelect.selectedIndex === 1) ? 2 : 1; 
-        // Uwaga: index 1 to pierwszy kierunek, bo index 0 to "Wybierz kierunek..."
         
-        // Wywołujemy Twoje istniejące funkcje aktualizujące
+        // Wywołanie aktualizacji kursów dla nowego kierunku
         updateCourses(); 
         
-        // Automatyczny wybór pierwszego dostępnego kursu w nowym kierunku
+        // Automatyczny wybór pierwszego kursu i start
         const courseSelect = document.getElementById('courseSelect');
         if (courseSelect.options.length > 1) {
             courseSelect.selectedIndex = 1;
-            startDriving(); // Restartuje ekran z nowymi danymi
+            startDriving();
         }
     }
 }
