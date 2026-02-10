@@ -1,7 +1,7 @@
 {
   "name": "Asystent Kierowcy",
   "short_name": "Asystent",
-  "start_url": "ZKMP.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#1e40af",
@@ -9,4 +9,5 @@
   "icons": [
     { "src": "icon.png", "sizes": "512x512", "type": "image/png" }
   ]
+
 }
